@@ -22,4 +22,4 @@ kernel:install-requirements
 	@echo "kernel registered. In vscode, select the kernel named $(KERNEL_DISPLAY)"
 #5. Clean up the virtual environment.
 clean-venv:
-	@rm -rf $(VENV) && echo "Virtual environment is removed."
+	@rm -rf $(VENV) && pip cache purge && echo "Virtual environment is removed."

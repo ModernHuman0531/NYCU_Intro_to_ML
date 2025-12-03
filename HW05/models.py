@@ -199,7 +199,13 @@ class ImprovedCNN(nn.Module):
         self.drop=nn.Dropout(dropout_rate) if use_dropout else nn.Identity()
 
         # 4. Fully connected layers
-        self.flat_size=64*7*7  # Flatten size after conv and pooling
+        # Calculate flatten size based on downsampling
+        if downsampling_type == 'none':
+            # No downsampling: 28x28 -> 28x28 -> 28x28
+            self.flat_size = 64 * 28 * 28
+        else:
+            # With downsampling: 28x28 -> 14x14 -> 7x7  
+            self.flat_size = 64 * 7 * 7
         self.fc=nn.Linear(self.flat_size, NUM_CLASSES)
 
     def _make_block(self, in_channels, out_channels, use_bn, use_residual, downsampling_type):
@@ -246,7 +252,7 @@ class ImprovedCNN(nn.Module):
         x=self.layer2(x) # (B,64,7,7)
 
         # Flatten
-        x=x.view(-1,self.flat_size)
+        x=x.view(x.size(0), -1)  # Dynamic flatten: preserve batch size
 
         # FC layer
         x=self.drop(x)

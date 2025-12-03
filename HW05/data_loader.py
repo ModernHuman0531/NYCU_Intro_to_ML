@@ -20,7 +20,7 @@ class FashionMNISTDataset(Dataset):
         if self.mode=='train' or self.mode=='val':
             self.labels=self.data_frame.iloc[:,0].values
             # Transform pixel to numpy array(unit8, 0-255)
-            self.images=self.data_frame.iloc[:,1:].astype(np.uint8)
+            self.images=self.data_frame.iloc[:,1:].values.astype(np.uint8)
 
         elif self.mode=='test':
             """
@@ -29,7 +29,7 @@ class FashionMNISTDataset(Dataset):
             Since label is -1 for test data, we do not need to load it.
             """
             self.indices=self.data_frame.iloc[:,0].values
-            self.images=self.data_frame.iloc[:,2:].astype(np.uint8)
+            self.images=self.data_frame.iloc[:,2:].values.astype(np.uint8)
 
     def __len__(self):
         return len(self.images)
@@ -40,11 +40,11 @@ class FashionMNISTDataset(Dataset):
 
         # Convert into Float32 Tensor and Normalize to [-1, 1] to stabilize training
         # (img/255.0-0.5)/0.5 ==> (img-127.5)/127.5
-        img=(img.astype(np.float32)-127.5)/127.5
+        image=(image.astype(np.float32)-127.5)/127.5
 
         # Convert dimensions from (28, 28) to (1, 28, 28) for CNN input
         # unseqeeze(0) adds a new dimension at position 0
-        image=torch.tensor(img).unsqueeze(0)
+        image=torch.tensor(image).unsqueeze(0)
 
         if self.mode=='train' or self.mode=='val':
             label=self.labels[idx]
@@ -75,7 +75,7 @@ def get_dataloaders(args):
     )
 
     # Read TEST CSV (test4student.csv file)
-    test_dataset=FashionMNISTDataset(csv_file=args.data_dir+'/test4student.csv',mode='test')
+    test_dataset=FashionMNISTDataset(csv_file=args.data_dir+'/test4students.csv',mode='test')
 
     # Create DataLoaders for each dataset
     train_loader=DataLoader(

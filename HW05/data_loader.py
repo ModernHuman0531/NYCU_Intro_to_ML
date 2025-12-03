@@ -108,11 +108,18 @@ def preprocess_input(x: torch.Tensor, model_type: str) -> torch.Tensor:
         torch.Tensor: Preprocessed tensor.
     """
     if model_type == 'NN':
-        # NN(MLP): flatten each 28*28 to a 784-dim vector
-        # x.shape changes from (batch_size, 1, 28, 28) to (batch_size, 784)
-        x = x.view(x.size(0), -1)  # (batch_size, 784)
+        # NN(MLP): flatten each image to 784-dim vector
+        # Ensure we maintain the batch dimension
+        if x.dim() == 4:  # (batch_size, channels, height, width)
+            batch_size = x.size(0)
+            x = x.reshape(batch_size, -1)  # Safe reshape to (batch_size, 784)
+        elif x.dim() == 3:  # (batch_size, height, width) - no channel dimension
+            batch_size = x.size(0)
+            x = x.reshape(batch_size, -1)
+        else:
+            raise ValueError(f"Unexpected input shape for NN: {x.shape}")
     elif model_type == 'CNN':
         # Ensure input is in (batch_size, 1, 28, 28) format for CNN
-        if x.dim() == 3:
-            x = x.unsqueeze(1)  # Add channel dimension
+        if x.dim() == 3:  # (batch_size, height, width)
+            x = x.unsqueeze(1)  # Add channel dimension -> (batch_size, 1, height, width)
     return x

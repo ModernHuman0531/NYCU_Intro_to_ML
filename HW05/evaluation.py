@@ -115,7 +115,7 @@ def generate_submission(model: nn.Module, model_type: str, args: Args, submissio
             image_ids.extend(ids.cpu().numpy())
     # 4. Create submission DataFrame csv
     submission_df=pd.DataFrame({
-        'id': image_ids,
+        'idx': image_ids,
         'label': predictions
     })
 

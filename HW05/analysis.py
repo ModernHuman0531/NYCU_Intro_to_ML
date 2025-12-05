@@ -45,8 +45,15 @@ def generate_summary_table(all_results: dict):
     print("\n"+"="*50)
     print("Experiment Summary Table:")
     print('='*50)
-    print(df_report.to_markdown(index=False))
-
+    latex_code=df_report.to_latex(
+        index=False,
+        float_format="%.2f",
+        caption="Ablation Study Results Summary",
+        label="tab:ablation_summary"
+    )
+    print("\n"+"="*50)
+    print(latex_code)
+    
     # Save to CSV
     df_report.to_csv('report_summary.csv', index=False)
     print("\nSummary table saved to report_summary.csv")

@@ -19,4 +19,4 @@ install-requirements:
 # Clean up the virtual environment
 clean:
 	@pip cache purge
-	@rm -rf $(VENV) && echo "Virtual environment $(VENV) removed
+	@rm -rf $(VENV) && echo "Virtual environment $(VENV) removed"
